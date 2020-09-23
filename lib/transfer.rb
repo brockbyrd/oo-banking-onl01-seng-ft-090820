@@ -15,15 +15,28 @@ class Transfer
     sender.valid? && receiver.valid?
   end
 
+  # def execute_transaction
+  #   if @sender.balance >= @amount && @status == "pending" && valid?
+  #     sender.deposit(@amount * -1)
+  #     receiver.deposit(@amount)
+  #     @status = "complete"
+  #   else
+  #     @status = "rejected"
+  #     return "Transaction rejected. Please check your account balance."
+  #   end
+  # end
+
   def execute_transaction
-    if @sender.balance >= @amount && @status == "pending" && valid?
+    if @amount > sender.balance || !valid? || @status == "pending"
+      @status = "rejected"
+      return "Transaction rejected. Please check your account balance."
+    elsif @status == "complete"
+      return "The transaction has already occurred."
+    else
       sender.deposit(@amount * -1)
       receiver.deposit(@amount)
       @status = "complete"
-    else
-      @status = "rejected"
-      return "Transaction rejected. Please check your account balance."
-    end
+      
   end
 
   def reverse_transfer
